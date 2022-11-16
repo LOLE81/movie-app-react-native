@@ -11,17 +11,21 @@ const styles = StyleSheet.create({
     padding: 7,
     margin: 2,
     justifyContent: "space-between",
+    alignItems: "center",
   },
   movieHeader: {
     flexDirection: "column",
+    flex: 1,
   },
   movieTitle: {
     color: "#684EC0",
+    fontSize: 20,
   },
   image: {
     width: 70,
     height: 70,
     borderRadius: 20,
+    alignContent: "center",
   },
 });
 

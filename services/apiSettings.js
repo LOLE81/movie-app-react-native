@@ -7,7 +7,6 @@ const useApiSettings = () => {
       const response = await axios.get(
         `https://api.themoviedb.org/3/movie/popular?${API_KEY}&page=50`
       );
-      console.log("--------------------", response.data.results[0].poster_path);
       const moviesInfo = await response.data.results.map((movie) => {
         return {
           id: movie.id,
@@ -15,7 +14,7 @@ const useApiSettings = () => {
           originalTitle: movie.original_title,
           review: movie.overview,
           image: `https://image.tmdb.org/t/p/w500/${movie.poster_path}`,
-          year: movie.release_date,
+          year: movie.release_date.slice(0, 4),
           rating: movie.vote_average,
           votes: movie.vote_count,
           genres: movie.genre_ids,

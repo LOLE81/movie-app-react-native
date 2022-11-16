@@ -1,14 +1,23 @@
-import { useEffect, useState } from "react";
-import { Text, View, StatusBar, FlatList, TextInput } from "react-native";
+import { Component, useEffect, useState } from "react";
+import {
+  Text,
+  View,
+  StatusBar,
+  FlatList,
+  TextInput,
+  TouchableHighlight,
+} from "react-native";
 import useApiSettings from "./services/apiSettings";
 import styles from "./styles/app.styles";
 import Movie from "./components/Movie";
+import SelectedMovie from "./components/SelectedMovie";
 
 export default function App() {
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
   const [search, setSearch] = useState("");
   const [refreshing, setRefreshing] = useState(false);
+  const [selected, setSelected] = useState(false);
 
   const apiSettings = useApiSettings();
 
@@ -38,24 +47,40 @@ export default function App() {
           />
         </View>
       </View>
-      <FlatList
-        style={styles.list}
-        data={movies.filter(
-          (movie) =>
-            movie.title.toLowerCase().includes(search.toLowerCase()) ||
-            movie.year.includes(search)
-        )}
-        renderItem={({ item }) => {
-          return <Movie movie={item} />;
-        }}
-        refreshing={refreshing}
-        onRefresh={async () => {
-          setRefreshing(true);
-          setSearch("");
-          await apiSettings.getAll();
-          setRefreshing(false);
-        }}
-      />
+
+      {selected ? (
+        <SelectedMovie data={movies} />
+      ) : (
+        <FlatList
+          style={styles.list}
+          data={movies.filter(
+            (movie) =>
+              movie.title.toLowerCase().includes(search.toLowerCase()) ||
+              movie.year.includes(search)
+          )}
+          renderItem={({ item }) => {
+            let info = movies.filter((movie) => movie.title === item.title);
+
+            return (
+              <TouchableHighlight
+                onPress={() => {
+                  setSelected(true);
+                  setMovies(info);
+                }}
+              >
+                <Movie movie={item} />
+              </TouchableHighlight>
+            );
+          }}
+          refreshing={refreshing}
+          onRefresh={async () => {
+            setRefreshing(true);
+            setSearch("");
+            await apiSettings.getAll();
+            setRefreshing(false);
+          }}
+        />
+      )}
     </View>
   );
 }
